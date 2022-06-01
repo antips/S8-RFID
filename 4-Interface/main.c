@@ -44,7 +44,8 @@
 #define USED 1
 #define REGISTERED 2
 
-#define FILENAME "list_tags.txt"
+#define FILENAME_DETECTED_TAGS "../detected_tags_epcs.txt"
+#define FILENAME_WHITELIST "../whitelist.txt"
 
 //le glass -> 129 char
 //Time stamp de lecture -> TODO
@@ -56,7 +57,7 @@ typedef struct
 	//char id[4];
 	int RSSI;
 	//int time_stamp;
-	clock_t start_time;
+	int start_time;
 	//int number;
 	int list;
 } Glass;
@@ -269,6 +270,54 @@ void removeRegisteredGlass(int index)
 	numRegisteredGlass--;
 }
 
+int readCurrentTags(char *filename)
+{
+	FILE *fptr;
+	char glassId[GLASS_ID_SIZE];
+	char c;
+    int count_name_length = 0;
+	
+	fptr = fopen(filename, "r");
+	
+	if (fptr == NULL)
+    {
+        printf("Impossible d'ouvrir le fichier %s\n", filename);
+        return -1;
+    }
+    
+	for (c = getc(fptr); c != EOF; c = getc(fptr))
+    {
+    	if (c == '\n')
+        {
+        	if (count_name_length > 0)  //Il y a un tag dans la basse 
+        	{	//On créé le tag
+        		//On compare GlassId avec les listes des tags : ceux dans tags enregistrés et tags actifs.
+		    	//testGlass->id
+		    	
+			}
+			
+        	//On reinitialise le nom du tag :
+        	for (int i = 0; i < count_name_length; i++)
+        	{
+        		glassId[i] = ' ';
+			}
+			count_name_length = 0;
+		}
+        else
+        {
+        	if(count_name_length < NUM_MAX_PRINTED_CHAR)
+				glassId[count_name_length] = c;
+			else if (count_name_length == NUM_MAX_PRINTED_CHAR)
+			{
+				glassId[NUM_MAX_PRINTED_CHAR-1] = '.';
+				glassId[NUM_MAX_PRINTED_CHAR-2] = '.';
+				glassId[NUM_MAX_PRINTED_CHAR-3] = '.';
+			}
+        	count_name_length++;
+		}
+	}
+}
+
 int initGlassesIDs(char *filename)
 {
     FILE *fptr;
@@ -281,7 +330,7 @@ int initGlassesIDs(char *filename)
 
     if (fptr == NULL)
     {
-        printf("Impossible d'ouvrir le fichier %s", filename);
+        printf("Impossible d'ouvrir le fichier %s\n", filename);
         return -1;
     }
 
@@ -296,7 +345,7 @@ int initGlassesIDs(char *filename)
 		    	//testGlass->id
 		    	newGlass.list = EMPTY;
 		    	newGlass.RSSI = 0;
-		    	newGlass.start_time = clock();
+		    	newGlass.start_time = (int)time(NULL);
 		    	
 		    	addRegisteredGlass(newGlass);
 			}
@@ -322,6 +371,7 @@ int initGlassesIDs(char *filename)
         	count_name_length++;
 		}
 	}
+	
 	//On enregistre le dernier tag
 	if (count_name_length > 0)
 	{	//On créé le tag
@@ -343,7 +393,7 @@ int initGlassesIDs(char *filename)
 int main(int argc, char *argv[]) {
 	
 	//Initialisation du nombre de verre :
-	initGlassesIDs(FILENAME);
+	initGlassesIDs(FILENAME_WHITELIST);
 	
 	FILE *fp;
     char row[MAXCHAR];

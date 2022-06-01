@@ -12,7 +12,7 @@ CXXINCS  = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"
 BIN      = VERRE_CONNECTE.exe
 CXXFLAGS = $(CXXINCS) -IC:\raylib\raylib\src -std=c99 -Wall -mwindows -m32 -fopenmp
 CFLAGS   = $(INCS) -IC:\raylib\raylib\src -std=c99 -Wall -mwindows -m32 -fopenmp
-DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\devcpp.exe INTERNAL_DEL
+DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\DevCpp.exe INTERNAL_DEL
 
 .PHONY: all all-before all-after clean clean-custom
 
