@@ -325,6 +325,7 @@ int initGlassesIDs(char *filename)
     char c;
     int count_name_length = 0;
     char glassId[GLASS_ID_SIZE];
+    int data_sorter;
 
     fptr = fopen(filename, "r");
 
@@ -349,7 +350,7 @@ int initGlassesIDs(char *filename)
 		    	
 		    	addRegisteredGlass(newGlass);
 			}
-			
+			data_sorter = 0;
         	//On reinitialise le nom du tag :
         	for (int i = 0; i < count_name_length; i++)
         	{
@@ -358,17 +359,31 @@ int initGlassesIDs(char *filename)
 			count_name_length = 0;
         	count++;
 		}
-        else
+        else		//On lit les infos relatives au verre
         {
-        	if(count_name_length < NUM_MAX_PRINTED_CHAR)
-				glassId[count_name_length] = c;
-			else if (count_name_length == NUM_MAX_PRINTED_CHAR)
-			{
-				glassId[NUM_MAX_PRINTED_CHAR-1] = '.';
-				glassId[NUM_MAX_PRINTED_CHAR-2] = '.';
-				glassId[NUM_MAX_PRINTED_CHAR-3] = '.';
+        	if (c == ',')
+        	{
+        		data_sorter++;
 			}
-        	count_name_length++;
+			else
+			{
+				if (data_sorter == 0)
+				{		//On est sur la partie ID du verre
+					if(count_name_length < NUM_MAX_PRINTED_CHAR)
+						glassId[count_name_length] = c;
+					else if (count_name_length == NUM_MAX_PRINTED_CHAR)
+					{
+						glassId[NUM_MAX_PRINTED_CHAR-1] = '.';
+						glassId[NUM_MAX_PRINTED_CHAR-2] = '.';
+						glassId[NUM_MAX_PRINTED_CHAR-3] = '.';
+					}
+		        	count_name_length++;
+				}
+				else if (data_sorter == 1)
+				{		//On est sur la partie timestamp
+					
+				}
+			}
 		}
 	}
 	
