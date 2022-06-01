@@ -1,0 +1,43 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug 1-Lecture_donnees_tags",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "cwd": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/1-Lecture_donnees_tags",
+            "program": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/1-Lecture_donnees_tags/main.exe",
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "C/C++ Runner: Debug Session",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "cwd": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/1-Lecture_donnees_tags",
+            "program": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/1-Lecture_donnees_tags/build/Debug/outDebug",
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

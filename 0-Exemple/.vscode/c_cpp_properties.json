@@ -1,0 +1,51 @@
+{
+  "configurations": [
+    {
+      "name": "windows-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/.."
+      ],
+      "compilerPath": "C:/msys64/mingw64/bin/gcc.exe",
+      "intelliSenseMode": "windows-gcc-x64",
+      "compilerArgs": [],
+      "configurationProvider": "ms-vscode.makefile-tools",
+      "mergeConfigurations": false,
+      "browse": {
+        "path": [
+          "${workspaceFolder}/**",
+          "${workspaceFolder}/../../../include/**"
+        ],
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "cStandard": "${default}",
+      "cppStandard": "${default}"
+    },
+    {
+      "name": "windows-g++-x64",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/../../../**"
+      ],
+      "defines": [
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE"
+      ],
+      "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+      "cStandard": "gnu17",
+      "cppStandard": "gnu++17",
+      "intelliSenseMode": "windows-gcc-x64",
+      "compilerArgs": [],
+      "mergeConfigurations": false,
+      "browse": {
+        "path": [
+          "${workspaceFolder}/**"
+        ],
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "configurationProvider": "ms-vscode.makefile-tools"
+    }
+  ],
+  "version": 4
+}
