@@ -57,7 +57,8 @@ typedef struct
 	//char id[4];
 	int RSSI;
 	//int time_stamp;
-	int start_time;
+	int last_read;
+	int now_read;
 	//int number;
 	int list;
 } Glass;
@@ -274,8 +275,11 @@ int readCurrentTags(char *filename)
 {
 	FILE *fptr;
 	char glassId[GLASS_ID_SIZE];
+	char glassTimeStamp[10];   //La taille masque d'un int ...
 	char c;
     int count_name_length = 0;
+    int count_timestamp_length = 0;
+    int data_sorter = 0;
 	
 	fptr = fopen(filename, "r");
 	
@@ -292,7 +296,7 @@ int readCurrentTags(char *filename)
         	if (count_name_length > 0)  //Il y a un tag dans la basse 
         	{	//On créé le tag
         		//On compare GlassId avec les listes des tags : ceux dans tags enregistrés et tags actifs.
-		    	//testGlass->id
+		    	//testGlass->id TODO
 		    	
 			}
 			
@@ -301,19 +305,40 @@ int readCurrentTags(char *filename)
         	{
         		glassId[i] = ' ';
 			}
+			data_sorter = 0;
 			count_name_length = 0;
+			count_timestamp_length = 0;
 		}
         else
         {
-        	if(count_name_length < NUM_MAX_PRINTED_CHAR)
-				glassId[count_name_length] = c;
-			else if (count_name_length == NUM_MAX_PRINTED_CHAR)
-			{
-				glassId[NUM_MAX_PRINTED_CHAR-1] = '.';
-				glassId[NUM_MAX_PRINTED_CHAR-2] = '.';
-				glassId[NUM_MAX_PRINTED_CHAR-3] = '.';
+        	if (c == ',')
+        	{
+        		data_sorter++;
 			}
-        	count_name_length++;
+			else
+			{
+				if (data_sorter == 0)
+				{	//On est sur le nom du verre
+					if(count_name_length < NUM_MAX_PRINTED_CHAR)
+						glassId[count_name_length] = c;
+					else if (count_name_length == NUM_MAX_PRINTED_CHAR)
+					{
+						glassId[NUM_MAX_PRINTED_CHAR-1] = '.';
+						glassId[NUM_MAX_PRINTED_CHAR-2] = '.';
+						glassId[NUM_MAX_PRINTED_CHAR-3] = '.';
+					}
+		        	count_name_length++;
+				}
+				else if (data_sorter == 1)
+				{		//On est sur la partie timestamp
+					if (count_timestamp_length < 10)
+						glassTimeStamp[count_timestamp_length] = c;
+					else
+					{	//On a dépassé la taille max de la zone d'écriture du int, wtf !!!
+						printf("Le timestamp du tag %s est trop grand !!! Comment cela est il possible ???\n", glassId);
+					}	
+				}
+			}
 		}
 	}
 }
@@ -325,6 +350,8 @@ int initGlassesIDs(char *filename)
     char c;
     int count_name_length = 0;
     char glassId[GLASS_ID_SIZE];
+    int count_timestamp_length = 0;
+    char glassTimeStamp[10];
     int data_sorter;
 
     fptr = fopen(filename, "r");
@@ -346,7 +373,8 @@ int initGlassesIDs(char *filename)
 		    	//testGlass->id
 		    	newGlass.list = EMPTY;
 		    	newGlass.RSSI = 0;
-		    	newGlass.start_time = (int)time(NULL);
+		    	newGlass.last_read = atoi(glassTimeStamp);
+		    	newGlass.now_read = atoi(glassTimeStamp);		//Pour l'initialisation on met les deux timestamp à la meme valeur
 		    	
 		    	addRegisteredGlass(newGlass);
 			}
@@ -357,6 +385,7 @@ int initGlassesIDs(char *filename)
         		glassId[i] = ' ';
 			}
 			count_name_length = 0;
+			count_timestamp_length = 0;
         	count++;
 		}
         else		//On lit les infos relatives au verre
@@ -381,7 +410,12 @@ int initGlassesIDs(char *filename)
 				}
 				else if (data_sorter == 1)
 				{		//On est sur la partie timestamp
-					
+					if (count_timestamp_length < 10)
+						glassTimeStamp[count_timestamp_length] = c;
+					else
+					{	//On a dépassé la taille max de la zone d'écriture du int, wtf !!!
+						printf("Le timestamp du tag %s est trop grand !!! Comment cela est il possible ???\n", glassId);
+					}
 				}
 			}
 		}
@@ -434,7 +468,8 @@ int main(int argc, char *argv[]) {
 	    	//testGlass->id
 	    	testGlass.list = EMPTY;
 	    	testGlass.RSSI = 0;
-	    	testGlass.start_time = clock();
+	    	testGlass.last_read = 0;	//TODO --
+	    	testGlass.now_read = 0;		//TODO
 	    	
 	    	addEmptyGlass(testGlass);
 	    	
@@ -456,7 +491,8 @@ int main(int argc, char *argv[]) {
 	    	//testGlass->id
 	    	testGlass.list = USED;
 	    	testGlass.RSSI = 1;
-	    	testGlass.start_time = clock();
+	    	testGlass.last_read = 0;		//TODO -- 
+	    	testGlass.now_read = 0;			//TODO
 	    	
 	    	addUsedGlass(testGlass);
 		}
