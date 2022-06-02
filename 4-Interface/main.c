@@ -350,8 +350,8 @@ int initGlassesIDs(char *filename)
     char c;
     int count_name_length = 0;
     char glassId[GLASS_ID_SIZE];
-    int count_timestamp_length = 0;
-    char glassTimeStamp[10];
+    //int count_timestamp_length = 0;
+    //char glassTimeStamp[10];
     int data_sorter;
 
     fptr = fopen(filename, "r");
@@ -373,8 +373,8 @@ int initGlassesIDs(char *filename)
 		    	//testGlass->id
 		    	newGlass.list = EMPTY;
 		    	newGlass.RSSI = 0;
-		    	newGlass.last_read = atoi(glassTimeStamp);
-		    	newGlass.now_read = atoi(glassTimeStamp);		//Pour l'initialisation on met les deux timestamp à la meme valeur
+		    	newGlass.last_read = (int)time(NULL);//atoi(glassTimeStamp);
+		    	newGlass.now_read = (int)time(NULL);//atoi(glassTimeStamp);		//Pour l'initialisation on met les deux timestamp à la meme valeur
 		    	
 		    	addRegisteredGlass(newGlass);
 			}
@@ -385,7 +385,7 @@ int initGlassesIDs(char *filename)
         		glassId[i] = ' ';
 			}
 			count_name_length = 0;
-			count_timestamp_length = 0;
+			//count_timestamp_length = 0;
         	count++;
 		}
         else		//On lit les infos relatives au verre
@@ -410,12 +410,12 @@ int initGlassesIDs(char *filename)
 				}
 				else if (data_sorter == 1)
 				{		//On est sur la partie timestamp
-					if (count_timestamp_length < 10)
-						glassTimeStamp[count_timestamp_length] = c;
-					else
-					{	//On a dépassé la taille max de la zone d'écriture du int, wtf !!!
-						printf("Le timestamp du tag %s est trop grand !!! Comment cela est il possible ???\n", glassId);
-					}
+//					if (count_timestamp_length < 10)
+//						glassTimeStamp[count_timestamp_length] = c;
+//					else
+//					{	//On a dépassé la taille max de la zone d'écriture du int, wtf !!!
+//						printf("Le timestamp du tag %s est trop grand !!! Comment cela est il possible ???\n", glassId);
+//					}
 				}
 			}
 		}
@@ -429,7 +429,8 @@ int initGlassesIDs(char *filename)
     	//testGlass->id
     	newGlass.list = EMPTY;
     	newGlass.RSSI = 0;
-    	newGlass.start_time = clock();
+    	newGlass.last_read = (int)time(NULL);		//TODO
+    	newGlass.now_read = (int)time(NULL);
     	
     	addRegisteredGlass(newGlass);
 	}
