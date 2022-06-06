@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug 1-Lecture_donnees_tags",
+            "name": "1-Lecture_donnees_tags",
             "type": "cppdbg",
             "request": "launch",
             "args": [],
@@ -26,7 +26,7 @@
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
-            "externalConsole": true,
+            "externalConsole": false,
             "cwd": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/3-Programme_lecteur_tag_v1",
             "program": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/3-Programme_lecteur_tag_v1/main.exe",
             "MIMode": "gdb",
@@ -40,14 +40,14 @@
             ]
         },
         {
-            "name": "C/C++ Runner: Debug Session",
+            "name": "B-Tests",
             "type": "cppdbg",
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
             "externalConsole": false,
-            "cwd": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/3-Programme_lecteur_tag_v1",
-            "program": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/3-Programme_lecteur_tag_v1/build/Debug/outDebug",
+            "cwd": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/B-Test",
+            "program": "c:/Users/anton/OneDrive/Documents/1-TRAVAIL/2021-2022_I2/EOC/S8 - RFID/Projet/Programmes/B-Test/test.exe",
             "MIMode": "gdb",
             "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
             "setupCommands": [
