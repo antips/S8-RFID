@@ -47,6 +47,10 @@
 #define FILENAME_DETECTED_TAGS "../detected_tags_epcs.txt"
 #define FILENAME_WHITELIST "../whitelist.txt"
 
+#define REFRESH_TIME 120	//t*FPS = 120, pour le refresh;
+
+#define TRESHOLD 20			//Le nb de secondes non detecter
+
 //le glass -> 129 char
 //Time stamp de lecture -> TODO
 //RSSI -> signed int (a comfirmer)
@@ -74,6 +78,9 @@ int numUsedGlass = 0;
 Glass registeredGlasses[MAX_GLASSES];
 int numRegisteredGlass = 0;
 
+char detectedGlasses[GLASS_ID_SIZE][MAX_GLASSES]; //Verres détecté dans la lecture des tags
+
+int detectedGlassesTimeStamp[MAX_GLASSES]; //Timestamp des verres detectés
 
 Vector2 touchPosition = { 0, 0 };
 
@@ -149,12 +156,55 @@ void DrawGlass(/*int col, int line, */Color color, int list, int index)
 			}
 		}
 	}
-	DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, BLACK);
+	
+	int indice = isGlassDetected(text);
+	
+	if (indice < -1) //On a trouvé un match
+	{
+		printf("Match !!!! \n");
+		if (list == USED)
+			DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, GREEN);
+		else if (list == EMPTY)
+		{	//On regarde la timestamp pour déplacer automatiquement le verre d'une catéorie à l'autre
+			if ((int)time(NULL) - detectedGlassesTimeStamp[indice] > TRESHOLD)
+			{	//On doit déplacer le verre
+				DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, RED);
+				//addUsedGlass(emptyGlasses[index]);
+				//removeEmptyGlass(index);  //-> Le serveur sait que son verre est vide !
+			}
+			else
+			{
+				DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, BLACK);
+			}
+		}
+		else
+		{
+			DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, BLACK);
+		}
+	}
+	else
+	{
+		DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, BLACK);
+	}
 	DrawLine(col+0.1*ICON_SCALE, line+0.1*ICON_SCALE, col+0.2*ICON_SCALE, line+0.9*ICON_SCALE, color);
 	DrawLine(col+0.2*ICON_SCALE, line+0.9*ICON_SCALE, col+0.8*ICON_SCALE, line+0.9*ICON_SCALE, color);
 	DrawLine(col+0.8*ICON_SCALE, line+0.9*ICON_SCALE, col+0.9*ICON_SCALE, line+0.1*ICON_SCALE, color);
+}
+
+int isGlassDetected(char glassID[GLASS_ID_SIZE])
+{
+	//Debug :
 	
-	
+	//return -1;
+	for (int i = 0; i < MAX_GLASSES; i++)
+	{
+		if (strcmp(detectedGlasses[i], glassID) == 0)
+		{	
+			printf("found !\n");
+			return i;
+		}
+	}
+	return -1;
 }
 
 void addEmptyGlass(Glass glass)
@@ -227,7 +277,6 @@ void removeEmptyGlass(int index)
 		emptyGlasses[i] = emptyGlasses[i+1];
 	}
 	
-	//TODO -> S'occuper du dernier verre
 	emptyGlasses[numEmptyGlass-1] = NO_GLASS;
 
 	numEmptyGlass--;
@@ -246,7 +295,6 @@ void removeUsedGlass(int index)
 		usedGlasses[i] = usedGlasses[i+1];
 	}
 	
-	//TODO -> S'occuper du dernier verre
 	usedGlasses[numUsedGlass-1] = NO_GLASS;
 	
 	numUsedGlass--;
@@ -265,7 +313,6 @@ void removeRegisteredGlass(int index)
 		registeredGlasses[i] = registeredGlasses[i+1];
 	}
 	
-	//TODO -> S'occuper du dernier verre
 	registeredGlasses[numRegisteredGlass-1] = NO_GLASS;
 	
 	numRegisteredGlass--;
@@ -273,6 +320,7 @@ void removeRegisteredGlass(int index)
 
 int readCurrentTags(char *filename)
 {
+	printf("Lecture des tags courants ...\n");
 	FILE *fptr;
 	char glassId[GLASS_ID_SIZE];
 	char glassTimeStamp[10];   //La taille masque d'un int ...
@@ -280,6 +328,7 @@ int readCurrentTags(char *filename)
     int count_name_length = 0;
     int count_timestamp_length = 0;
     int data_sorter = 0;
+    int cpt_detected_glasses = 0;
 	
 	fptr = fopen(filename, "r");
 	
@@ -289,6 +338,9 @@ int readCurrentTags(char *filename)
         return -1;
     }
     
+    //On réinitialise les listes :
+    
+    
 	for (c = getc(fptr); c != EOF; c = getc(fptr))
     {
     	if (c == '\n')
@@ -296,14 +348,31 @@ int readCurrentTags(char *filename)
         	if (count_name_length > 0)  //Il y a un tag dans la basse 
         	{	//On créé le tag
         		//On compare GlassId avec les listes des tags : ceux dans tags enregistrés et tags actifs.
-		    	//testGlass->id TODO
-		    	
+        		printf("Tag detecté ! name = %s\n", glassId);
+        		
+        		if (cpt_detected_glasses < MAX_GLASSES)
+        		{
+	        		//detectedGlasses[cpt_detected_glasses] = glassId;
+	        		strcpy(detectedGlasses[cpt_detected_glasses], glassId);
+			    	detectedGlassesTimeStamp[cpt_detected_glasses] = glassTimeStamp;
+			    	cpt_detected_glasses ++;
+				}
+				else
+				{
+					printf("Error : trop de tags sont présents dans le fichier de lecture !!!!\n");
+				}
 			}
 			
         	//On reinitialise le nom du tag :
         	for (int i = 0; i < count_name_length; i++)
         	{
         		glassId[i] = ' ';
+			}
+			
+			//On réinitialise e timestamp
+			for (int i = 0; i < 10; i++)
+        	{
+        		glassTimeStamp[i] = ' ';
 			}
 			data_sorter = 0;
 			count_name_length = 0;
@@ -441,6 +510,7 @@ int initGlassesIDs(char *filename)
 }
 
 int main(int argc, char *argv[]) {
+	static int cpt_refresh_read_file = 0;
 	
 	//Initialisation du nombre de verre :
 	initGlassesIDs(FILENAME_WHITELIST);
@@ -458,6 +528,21 @@ int main(int argc, char *argv[]) {
     
     while(!WindowShouldClose())
     {
+    	
+    	//Traitement de l'automatisation des IDS des verres :
+    	
+    	if (cpt_refresh_read_file == REFRESH_TIME-1)
+		{
+			cpt_refresh_read_file = 0;
+			readCurrentTags(FILENAME_DETECTED_TAGS);
+			//TODO -> Utilisation des données pour l'affichage correct des verres
+		}
+		else
+		{
+			cpt_refresh_read_file++;
+		}
+    	
+    	
     	//DEBUG - ajout / soustraction de verre
     
 	    if(IsKeyPressed(KEY_P))
