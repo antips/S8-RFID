@@ -6,5 +6,6 @@
 int getNumberOfLinesInFile(const char *filename);
 int readAllLinesOfFile(const char *fileName, char outputBuffer[][LINE_MAX_LENGTH]);
 int writeAllLinesInFile(const char *fileName, char stringBuffer[][LINE_MAX_LENGTH], int tagCount);
+int updateFile(const char *fileName, char stringBuffer[][MAX_EPC_LENGTH], int tagCount);
 
 #endif

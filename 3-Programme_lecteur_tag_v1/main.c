@@ -9,6 +9,7 @@
 
 #define IS_TEST_WITHOUT_ANTENNA 1
 
+void filterDetectedTagsWithRegisteredTags(struct NUR_TAG_DATA detectedTagsData[], char registeredTags[][MAX_EPC_LENGTH]);
 void displayDetectedTagsInConsole(struct NUR_TAG_DATA tagsData[], int tagCount);
 void updateDetectedTagsInFile(struct NUR_TAG_DATA tagsData[], int tagCount, const char *fileName);
 
@@ -143,6 +144,10 @@ int main()
     return 0;
 }
 
+void filterDetectedTagsWithRegisteredTags(struct NUR_TAG_DATA detectedTagsData[], char registeredTags[][MAX_EPC_LENGTH])
+{
+}
+
 void displayDetectedTagsInConsole(struct NUR_TAG_DATA tagsData[], int tagCount)
 {
     static int lineCounter = 0;
@@ -175,7 +180,7 @@ void updateDetectedTagsInFile(struct NUR_TAG_DATA tagsData[], int tagCount, cons
 {
     char tagsEPCs[tagCount][MAX_EPC_LENGTH];
     for (int i = 0; i < tagCount; i++)
-        getEpcStrOfTagData(tagsData[i], tagsEPCs[tagCount]);
+        getEpcStrOfTagData(tagsData[i], tagsEPCs[i]);
 
-    writeAllLinesInFile(fileName, tagsEPCs, tagCount);
+    updateFile(fileName, tagsEPCs, tagCount);
 }
