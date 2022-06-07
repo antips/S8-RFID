@@ -159,7 +159,7 @@ void DrawGlass(/*int col, int line, */Color color, int list, int index)
 	
 	int indice = isGlassDetected(text);
 	
-	if (indice < -1) //On a trouvé un match
+	if (indice != -1) //On a trouvé un match
 	{
 		printf("Match !!!! \n");
 		if (list == USED)
@@ -198,9 +198,9 @@ int isGlassDetected(char glassID[GLASS_ID_SIZE])
 	//return -1;
 	for (int i = 0; i < MAX_GLASSES; i++)
 	{
-		if (strcmp(detectedGlasses[i], glassID) == 0)
+		if (strncmp(detectedGlasses[i], glassID, NUM_MAX_PRINTED_CHAR) == 0)
 		{	
-			printf("found !\n");
+			//printf("found !\n");
 			return i;
 		}
 	}
