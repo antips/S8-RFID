@@ -45,8 +45,11 @@ int readAllLinesOfFile(const char *fileName, char outputBuffer[][LINE_MAX_LENGTH
     char line[LINE_MAX_LENGTH];
     while (fgets(line, LINE_MAX_LENGTH, fptr))
     {
-        strcpy(outputBuffer[i], line);
-        i++;
+        if (line[0] != '\n')
+        {
+            strcpy(outputBuffer[i], line);
+            i++;
+        }
     }
 
     fclose(fptr);
