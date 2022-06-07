@@ -49,7 +49,7 @@
 
 #define REFRESH_TIME 120	//t*FPS = 120, pour le refresh;
 
-#define TRESHOLD 20			//Le nb de secondes non detecter
+#define TRESHOLD 5			//Le nb de secondes non detecter
 
 //le glass -> 129 char
 //Time stamp de lecture -> TODO
@@ -161,21 +161,18 @@ void DrawGlass(/*int col, int line, */Color color, int list, int index)
 	
 	if (indice != -1) //On a trouvé un match
 	{
-		printf("Match !!!! \n");
+		//printf("Match !!!! \n");
 		if (list == USED)
-			DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, GREEN);
+			if ((int)time(NULL) - detectedGlassesTimeStamp[indice] > TRESHOLD)
+				DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, GREEN);
+			else
+				DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, BLACK);
 		else if (list == EMPTY)
 		{	//On regarde la timestamp pour déplacer automatiquement le verre d'une catéorie à l'autre
-			if ((int)time(NULL) - detectedGlassesTimeStamp[indice] > TRESHOLD)
-			{	//On doit déplacer le verre
+				//On doit déplacer le verre
 				DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, RED);
 				//addUsedGlass(emptyGlasses[index]);
 				//removeEmptyGlass(index);  //-> Le serveur sait que son verre est vide !
-			}
-			else
-			{
-				DrawText(text, col+ICON_SCALE+MARGIN_ICON, line, ICON_SCALE, BLACK);
-			}
 		}
 		else
 		{
